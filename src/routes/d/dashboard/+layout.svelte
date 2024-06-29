@@ -4,9 +4,9 @@
 
 <div class="main-container">
 	<slot />
-	<div class="menu-container">
+	<!-- <div class="menu-container">
 		<MenuBar />
-	</div>
+	</div> -->
 </div>
 
 <style>
@@ -18,10 +18,6 @@
 		justify-content: flex-start;
 		/* align-items: center; */
 		/* background-color: #eae8f0; */
-	}
-
-	.menu-container {
-		position: fixed;
-		bottom: 0;
+		padding-bottom: 4rem;
 	}
 </style>

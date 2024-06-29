@@ -83,15 +83,23 @@ export const POST = async ({ request }) => {
 
 		// Add more detailed extraction based on the type
 		if (metadata.type.includes('article')) {
+			metadata.type = 'article';
 			metadata.author = metadata_other['author'];
 			metadata.published_time = $('meta[property="article:published_time"]').attr('content');
 		} else if (metadata.type.includes('book')) {
+			metadata.type = 'book';
 			metadata.author = metadata_other['author'];
 			metadata.release_date = $('meta[property="book:release_date"]').attr('content');
-		} else if (metadata.type.includes('video.movie')) {
+		} else if (metadata.type.includes('video')) {
+			metadata.type = 'video';
+		} else if (metadata.type.includes('movie')) {
+			metadata.type = 'movie';
 			metadata.director = $('meta[property="video:director"]').attr('content');
 			metadata.release_date = $('meta[property="video:release_date"]').attr('content');
-		} else if (metadata.type.includes('music.song')) {
+		} else if (metadata.type.includes('tvshow')) {
+			metadata.type = 'tvshow';
+		} else if (metadata.type.includes('music')) {
+			metadata.type = 'music';
 			metadata.artist = $('meta[property="music:musician"]').attr('content');
 			metadata.album = $('meta[property="music:album"]').attr('content');
 		}

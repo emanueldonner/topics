@@ -84,11 +84,18 @@
 			<div class="edit-form">
 				<label>
 					Type:
-					<input
-						type="text"
-						bind:value={$info.type}
-						on:input={(e) => ($info.type = e.target.value)}
-					/>
+					<p>{$info.type}</p>
+					<!-- dropdown with types -->
+					<select bind:value={$info.type}>
+						<option value="article">Article</option>
+						<option value="book">Book</option>
+						<option value="video">Video</option>
+						<option value="tvshow">TV Show</option>
+						<option value="movie">Movie</option>
+						<option value="music">Music</option>
+						<option value="podcast">Podcast</option>
+						<option value="other">Other</option>
+					</select>
 				</label>
 				<label>
 					URL:

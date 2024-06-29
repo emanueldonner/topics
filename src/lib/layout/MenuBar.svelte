@@ -3,6 +3,7 @@
 	import Icon from '@iconify/svelte';
 	import Modal from '../components/Modal.svelte';
 	import EditInfoCard from '../components/EditInfoCard.svelte';
+	export let user;
 </script>
 
 <div class="menu-bar">
@@ -19,7 +20,7 @@
 	<a href="#">
 		<Icon icon="lucide:tag" />
 	</a>
-	<a href="#">
+	<a href="/d/profile/{user.id}">
 		<Icon icon="lucide:circle-user-round" />
 	</a>
 </div>
@@ -35,7 +36,9 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0.6rem 1rem;
+		padding: 1rem;
+		border-radius: 1.5rem;
+		/* border-top-right-radius: 1.5rem; */
 	}
 
 	button,

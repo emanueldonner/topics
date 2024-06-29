@@ -1,5 +1,10 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import CardType from './InfoCard/CardType.svelte';
+	import CardEditOverlay from './InfoCard/CardEditOverlay.svelte';
+	import Icon from '@iconify/svelte';
+	import CardAvatar from './InfoCard/CardAvatar.svelte';
+	import CardInteraction from './InfoCard/CardInteraction.svelte';
 
 	export let entry;
 
@@ -16,15 +21,22 @@
 <div class="card">
 	{#if entry.id}
 		<div class="edit-overlay">
-			<button on:click|preventDefault={() => editEntry(entry)}>edit</button>
-			<button on:click|preventDefault={() => deleteEntry(entry)}>delete</button>
+			<CardEditOverlay />
 		</div>
 	{/if}
 	<div class="image">
+		<div class="user-wrapper">
+			<CardAvatar />
+		</div>
 		<img src={entry.image} alt={entry.title} />
+		<div class="card-type">
+			<CardType type={entry.type} />
+		</div>
+	</div>
+	<div class="interaction-container">
+		<CardInteraction {entry} />
 	</div>
 	<div class="card-body">
-		<span class="card-type">{entry.type}</span>
 		<h5 class="card-title">{entry.title}</h5>
 		<div class="card-text-container">
 			<p class="card-text">{entry.description}</p>
@@ -38,7 +50,7 @@
 	.card {
 		position: relative;
 		padding: 0;
-		background-color: #000;
+		background: rgba(255, 255, 255, 0.96);
 		border-radius: var(--card-radius);
 		width: 16rem;
 		box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.09);
@@ -50,37 +62,33 @@
 
 	.edit-overlay {
 		position: absolute;
-		top: 0;
-		right: 0;
-		padding: 0.2rem 0.4rem;
-		background-color: rgba(0, 0, 0, 0.5);
-		display: flex;
-		justify-content: flex-end;
-		align-items: flex-start;
-		gap: 0.5rem;
-		z-index: 1;
-		opacity: 0;
-		transition: opacity 0.3s ease;
+		top: 0.5rem;
+		right: 0.5rem;
+		/* mix-blend-mode: difference; */
+		z-index: 2;
 	}
 	.card:hover .edit-overlay {
 		opacity: 1;
 	}
 
-	.edit-overlay button {
-		background: none;
-		border: none;
-		padding: 0;
-		color: white;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-		cursor: pointer;
-	}
-
 	.image {
 		width: 100%;
 		height: 18rem;
+		position: relative;
+	}
+
+	.user-wrapper {
+		position: absolute;
+		top: 0.5rem;
+		left: 0.5rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: rgba(0, 0, 0, 0.4);
+		border-radius: 1.5rem;
+		padding: 0.4rem 0.8rem 0.4rem 0.4rem;
+		/* background blur */
+		backdrop-filter: blur(10px);
 	}
 
 	img {
@@ -92,28 +100,26 @@
 		transition: transform 0.3s ease;
 	}
 
+	.card-type {
+		position: absolute;
+		bottom: 0.5rem;
+		right: 0.5rem;
+	}
+
 	.card-body {
 		position: absolute;
 		bottom: 0;
 		width: 100%;
-		padding: 0.6rem 1.4rem;
-		background: rgba(255, 255, 255, 0.96);
+		padding: 0.6rem 0.6rem;
+
 		color: #333;
 		box-sizing: border-box;
 		transition: height 0.3s ease;
 	}
 
-	.card-type {
-		font-size: 0.8rem;
-		padding: 0.3rem 0.5rem;
-		border-radius: 0.5rem;
-		background-color: #555;
-		color: white;
-		display: inline-block;
-	}
-
 	.card-title {
-		margin: 0.6rem 0;
+		margin: 0rem 0 0.6rem;
+		font-weight: 700;
 	}
 
 	.card-text-container {
@@ -147,15 +153,16 @@
 			width: 100%;
 			height: auto;
 			padding: 0;
-			border-radius: 0;
 			box-shadow: none;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+			border-radius: 0.2rem;
 		}
 		.card:hover img {
 			transform: scale(1);
 		}
 		.card-body {
 			position: static;
-			background: white;
+			/* background: white; */
 		}
 
 		.image {
@@ -166,7 +173,6 @@
 		img {
 			height: auto;
 			width: 100%;
-			border-radius: 0;
 		}
 	}
 </style>
