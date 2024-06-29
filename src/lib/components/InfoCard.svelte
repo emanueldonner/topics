@@ -5,6 +5,7 @@
 	import Icon from '@iconify/svelte';
 	import CardAvatar from './InfoCard/CardAvatar.svelte';
 	import CardInteraction from './InfoCard/CardInteraction.svelte';
+	import CardUserNote from './InfoCard/CardUserNote.svelte';
 
 	export let entry;
 
@@ -16,17 +17,25 @@
 	const deleteEntry = (entry) => {
 		dispatch('deleteEntry', entry);
 	};
+
+	const shortUrl = (url) => {
+		// Extract the domain name from the URL
+		const domain = new URL(url).hostname;
+
+		// Return the first 10 characters of the domain name
+		return domain;
+	};
 </script>
 
 <div class="card">
 	{#if entry.id}
 		<div class="edit-overlay">
-			<CardEditOverlay />
+			<CardEditOverlay {entry} on:editEntry={editEntry} />
 		</div>
 	{/if}
 	<div class="image">
 		<div class="user-wrapper">
-			<CardAvatar />
+			<CardAvatar includeName />
 		</div>
 		<img src={entry.image} alt={entry.title} />
 		<div class="card-type">
@@ -37,10 +46,18 @@
 		<CardInteraction {entry} />
 	</div>
 	<div class="card-body">
+		<a href={entry.url} class="card-url" target="_blank"
+			>{shortUrl(entry.url)}
+
+			<Icon icon="lucide:link" />
+		</a>
 		<h5 class="card-title">{entry.title}</h5>
 		<div class="card-text-container">
 			<p class="card-text">{entry.description}</p>
 		</div>
+		{#if entry.user_note}
+			<CardUserNote userNote={entry.user_note} />
+		{/if}
 	</div>
 </div>
 
@@ -117,6 +134,15 @@
 		transition: height 0.3s ease;
 	}
 
+	.card-url {
+		font-size: 0.8rem;
+		color: #999;
+		margin: 0;
+		text-wrap: nowrap;
+		overflow-x: hidden;
+		max-width: 80vw;
+		text-decoration: none;
+	}
 	.card-title {
 		margin: 0rem 0 0.6rem;
 		font-weight: 700;

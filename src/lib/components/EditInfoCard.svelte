@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { entries, showModal } from '$lib/stores';
+	import { entries, showModal, entryToEdit } from '$lib/stores';
 	import { createEventDispatcher } from 'svelte';
 	import InfoCard from '$lib/components/InfoCard.svelte';
 
@@ -9,6 +9,11 @@
 	let info = writable({ type: '', url: '', title: '', description: '', author: '', image: '' });
 	let loading = writable(false);
 	const dispatch = createEventDispatcher();
+
+	$: if ($entryToEdit) {
+		console.log('entryToEdit', $entryToEdit);
+		info.set($entryToEdit);
+	}
 
 	const extractInfo = async (url) => {
 		loading.set(true);
@@ -64,16 +69,17 @@
 </script>
 
 <div class="container">
-	<input
-		class="url-input"
-		type="text"
-		name="url"
-		id="url"
-		placeholder="Paste URL here"
-		bind:value={url}
-		on:input={() => extractInfo(url)}
-	/>
-
+	{#if !$entryToEdit}
+		<input
+			class="url-input"
+			type="text"
+			name="url"
+			id="url"
+			placeholder="Paste URL here"
+			bind:value={url}
+			on:input={() => extractInfo(url)}
+		/>
+	{/if}
 	<div class="info-container" class:active={$info.title}>
 		{#if $loading}
 			<div class="loading"></div>
@@ -118,6 +124,13 @@
 					<textarea
 						bind:value={$info.description}
 						on:input={(e) => ($info.description = e.target.value)}
+					></textarea>
+				</label>
+				<label>
+					User note:
+					<textarea
+						bind:value={$info.user_note}
+						on:input={(e) => ($info.user_note = e.target.value)}
 					></textarea>
 				</label>
 				<label>

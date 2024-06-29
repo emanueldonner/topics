@@ -23,7 +23,7 @@ export async function GET({ locals }) {
 }
 
 export async function POST({ request, locals }) {
-	const { type, url, title, description, author, image } = await request.json();
+	const { type, url, title, description, user_note, author, image } = await request.json();
 	const { supabase, user } = locals;
 
 	const { data, error } = await supabase
@@ -35,6 +35,7 @@ export async function POST({ request, locals }) {
 				url,
 				title,
 				description,
+				user_note,
 				author,
 				image
 			}

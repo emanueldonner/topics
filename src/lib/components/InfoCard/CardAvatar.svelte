@@ -1,4 +1,6 @@
 <script>
+	export let includeName = false;
+	export let size = 'medium';
 	const randomNumber = (min, max) => {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	};
@@ -33,11 +35,12 @@
 	displayUserName();
 </script>
 
-<div class="user-avatar">
+<div class="user-avatar" class:small={size === 'small'}>
 	<img src="https://i.pravatar.cc/60?id={randomNumber(1, 70)}" alt="user avatar" />
 </div>
-
-<div class="user-name">{userName}</div>
+{#if includeName}
+	<div class="user-name">{userName}</div>
+{/if}
 
 <style>
 	.user-avatar {
@@ -49,6 +52,10 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+	.small {
+		width: 1rem;
+		height: 1rem;
 	}
 
 	img {

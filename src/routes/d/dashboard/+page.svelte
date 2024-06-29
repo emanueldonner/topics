@@ -4,14 +4,16 @@
 	import EditInfoCard from '$lib/components/EditInfoCard.svelte';
 	import { flip } from 'svelte/animate';
 	import Modal from '$lib/components/Modal.svelte';
-	import { showModal, entries } from '$lib/stores';
+	import { showModal, entries, entryToEdit } from '$lib/stores';
 
 	export let data;
 	entries.set(data.entries);
 
 	const handleEntryEdited = (event) => {
 		const newEntry = event.detail;
-		console.log('newEntry', newEntry);
+		console.log('newEntry', newEntry.detail);
+		entryToEdit.set(newEntry.detail);
+		showModal.set(true);
 		// entries = entries.map((entry) => (entry.id === newEntry.id ? newEntry : entry));
 	};
 
