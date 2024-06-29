@@ -19,11 +19,11 @@
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation>
-		<slot />
 		<!-- svelte-ignore a11y-autofocus -->
 		<button autofocus on:click={() => dialog.close()} class="close-button">
 			<Icon icon="mdi:close" />
 		</button>
+		<slot />
 	</div>
 </dialog>
 
@@ -36,7 +36,9 @@
 		max-width: 920px;
 		border-radius: 0.2em;
 		border: none;
-		padding: 1rem;
+		padding: 0rem 1rem 2rem;
+		overflow-y: scroll;
+		background-color: white;
 		transform: translateY(100%);
 	}
 	dialog::backdrop {
@@ -71,10 +73,10 @@
 		top: 0;
 		left: 0;
 		padding: 0.5rem;
-		font-size: 1.5rem;
+		font-size: 1.1rem;
 		line-height: 1;
 		border: none;
-		color: #4d4d4d;
+		color: #222;
 		background-color: transparent;
 		cursor: pointer;
 	}

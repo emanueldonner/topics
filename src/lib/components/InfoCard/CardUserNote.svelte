@@ -4,7 +4,7 @@
 	export let userNote;
 
 	const shortVersion = (text) => {
-		if (text.length > 100) {
+		if (text.length > 500) {
 			return text.slice(0, 500) + '...';
 		}
 		return text;

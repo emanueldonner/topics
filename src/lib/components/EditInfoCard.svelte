@@ -52,12 +52,37 @@
 				throw new Error('Failed to save entry');
 			}
 			const savedEntry = await response.json();
-			console.log('savedEntry', savedEntry);
-			entries.set([savedEntry, ...$entries]);
+			if (entry.id) {
+				entries.set($entries.map((e) => (e.id === entry.id ? savedEntry : e)));
+			} else {
+				entries.set([savedEntry, ...$entries]);
+			}
 			showModal.set(false);
 			resetForm();
 		} catch (error) {
 			console.error('Error saving entry:', error);
+		}
+		loading.set(false);
+	};
+
+	const deleteEntry = async () => {
+		loading.set(true);
+		try {
+			const response = await fetch('/api/entries', {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ id: $info.id })
+			});
+			if (!response.ok) {
+				throw new Error('Failed to delete entry');
+			}
+			entries.set($entries.filter((entry) => entry.id !== $info.id));
+			showModal.set(false);
+			resetForm();
+		} catch (error) {
+			console.error('Error deleting entry:', error);
 		}
 		loading.set(false);
 	};
@@ -90,8 +115,6 @@
 			<div class="edit-form">
 				<label>
 					Type:
-					<p>{$info.type}</p>
-					<!-- dropdown with types -->
 					<select bind:value={$info.type}>
 						<option value="article">Article</option>
 						<option value="book">Book</option>
@@ -149,7 +172,12 @@
 						on:input={(e) => ($info.image = e.target.value)}
 					/>
 				</label>
-				<button on:click={saveEntry}>Save Entry</button>
+				<div class="button-container">
+					<button class="save-button" on:click={saveEntry}>Save Entry</button>
+					{#if $info.id}
+						<button class="delete-button" on:click={deleteEntry}>Delete Entry</button>
+					{/if}
+				</div>
 			</div>
 		{:else if $info.error}
 			<p class="error">{$info.error}</p>
@@ -160,22 +188,27 @@
 <style>
 	.container {
 		width: 100%;
+		max-width: 600px;
+		margin: auto;
+		/* padding: 1rem; */
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: flex-start;
 		gap: 1rem;
-		min-height: 30rem;
+		padding-top: 1.2rem;
+		background-color: #fff;
 	}
+
 	.url-input {
-		width: 80%;
-		padding: 0.5rem;
+		width: 100%;
+		padding: 0.75rem;
 		border: 1px solid #ddd;
-		border-radius: 4px;
-		margin-bottom: 1rem;
+		border-radius: 0.375rem;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		font-size: 1rem;
 		box-sizing: border-box;
 	}
-	/* Add your styles here */
+
 	.loading {
 		width: 48px;
 		height: 48px;
@@ -186,6 +219,7 @@
 		box-sizing: border-box;
 		animation: spin 1s linear infinite;
 	}
+
 	@keyframes spin {
 		0% {
 			transform: rotate(0deg);
@@ -196,33 +230,79 @@
 	}
 
 	.info-container.active {
+		width: 100%;
 		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 1rem;
+		flex-direction: column;
 		background-color: #fff;
 		border-radius: 0.5rem;
-		padding: 1rem;
-		box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.09);
+		padding-top: 1.2rem;
+		/* box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.09); */
 	}
 
 	.edit-form {
+		width: 100%;
 		margin-top: 1rem;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.edit-form label {
-		display: block;
-		margin-bottom: 0.5rem;
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 1rem;
+		font-size: 0.875rem;
+		color: #333;
 	}
 
 	.edit-form input,
-	.edit-form textarea {
+	.edit-form textarea,
+	.edit-form select {
 		width: 100%;
-		padding: 0.5rem;
+		padding: 0.75rem;
 		border: 1px solid #ddd;
-		border-radius: 4px;
-		margin-bottom: 1rem;
+		border-radius: 0.375rem;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		font-size: 1rem;
 		box-sizing: border-box;
+		font-family: inherit;
+	}
+
+	.edit-form textarea {
+		resize: vertical;
+		height: 8rem;
+	}
+
+	.button-container {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.save-button,
+	.delete-button {
+		padding: 0.75rem 1.5rem;
+		border: none;
+		border-radius: 0.375rem;
+		font-size: 1rem;
+		cursor: pointer;
+	}
+
+	.save-button {
+		background-color: #007bff;
+		color: white;
+	}
+
+	.save-button:hover {
+		background-color: #0056b3;
+	}
+
+	.delete-button {
+		background-color: #dc3545;
+		color: white;
+	}
+
+	.delete-button:hover {
+		background-color: #c82333;
 	}
 
 	.error {
