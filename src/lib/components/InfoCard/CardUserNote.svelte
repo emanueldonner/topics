@@ -5,7 +5,7 @@
 
 	const shortVersion = (text) => {
 		if (text.length > 100) {
-			return text.slice(0, 100) + '...';
+			return text.slice(0, 500) + '...';
 		}
 		return text;
 	};
@@ -30,10 +30,7 @@
 		display: flex;
 		align-items: flex-start;
 	}
-	.note-avatar {
-		/* width: 1rem;
-		height: 1rem; */
-	}
+
 	.note-text {
 		flex: 1;
 		overflow: hidden;
