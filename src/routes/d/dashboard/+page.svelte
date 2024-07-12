@@ -4,10 +4,13 @@
 	import EditInfoCard from '$lib/components/EditInfoCard.svelte';
 	import { flip } from 'svelte/animate';
 	import Modal from '$lib/components/Modal.svelte';
-	import { showModal, entries, entryToEdit } from '$lib/stores';
+	import { showModal, entries, entryToEdit, topics } from '$lib/stores';
 
 	export let data;
 	entries.set(data.entries);
+	topics.set(data.topics);
+	const { profile } = data;
+	console.log('profile', profile);
 
 	const handleEntryEdited = (event) => {
 		const newEntry = event.detail;
@@ -40,7 +43,12 @@
 		</button> -->
 		{#each $entries as entry (entry.id)}
 			<div target="_blank" animate:flip={{ duration: 200 }}>
-				<InfoCard {entry} on:editEntry={handleEntryEdited} on:deleteEntry={handleEntryDeleted} />
+				<InfoCard
+					{profile}
+					{entry}
+					on:editEntry={handleEntryEdited}
+					on:deleteEntry={handleEntryDeleted}
+				/>
 			</div>
 		{/each}
 	</div>
@@ -56,13 +64,12 @@
 		width: 100%;
 	}
 	.entry-grid {
-		padding: 1rem;
+		/* padding: 1rem; */
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
 		gap: 1rem;
-		background-color: #f0f3f5;
 	}
 
 	a {
@@ -73,7 +80,7 @@
 		.entry-grid {
 			flex-direction: column;
 			align-items: center;
-			padding: 1rem;
+			padding: 0.3rem;
 			gap: 1rem;
 		}
 	}

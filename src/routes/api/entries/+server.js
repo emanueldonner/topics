@@ -24,13 +24,43 @@ export async function GET({ locals }) {
 
 export async function POST({ request, locals }) {
 	const { supabase, user } = locals;
-	const { id, type, url, title, description, user_note, author, image } = await request.json();
-
+	const { id, topic, type, url, title, description, user_note, author, image } =
+		await request.json();
+	console.log('all data', topic, type, url, title, description, user_note, author, image);
 	try {
+		let { data: topicData, error: topicError } = await supabase
+			.from('topics')
+			.select('*')
+			.eq('name', topic.name)
+			.single();
+
+		if (topicError && topicError.code === 'PGRST116') {
+			const { data: newTopicData, error: newTopicError } = await supabase
+				.from('topics')
+				.insert({ name: topic.name, color: topic.color, user_id: user.id })
+				.single();
+
+			if (newTopicError) {
+				console.error('POST Insert Topic Error:', newTopicError);
+				return new Response(JSON.stringify({ message: newTopicError.message }), {
+					status: 500,
+					headers: { 'Content-Type': 'application/json' }
+				});
+			}
+
+			topicData = newTopicData;
+		} else if (topicError) {
+			console.error('POST Select Topic Error:', topicError);
+			return new Response(JSON.stringify({ message: topicError.message }), {
+				status: 500,
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
+
 		const { data, error } = await supabase
 			.from('entries')
 			.upsert({
-				id: id || undefined, // Use `undefined` if `id` is not provided
+				id: id || undefined,
 				user_id: user.id,
 				type,
 				url,
@@ -38,7 +68,9 @@ export async function POST({ request, locals }) {
 				description,
 				user_note,
 				author,
-				image
+				image,
+				topic_id: topicData?.id || newTopicData?.id,
+				topic_name: topic.name
 			})
 			.select('*');
 

@@ -5,3 +5,5 @@ export let showModal = writable(false);
 export let entries = writable([]);
 
 export let entryToEdit = writable(null);
+
+export let topics = writable([]);

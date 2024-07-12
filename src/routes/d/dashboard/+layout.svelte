@@ -1,5 +1,4 @@
 <script>
-	import MenuBar from '../../../lib/layout/MenuBar.svelte';
 </script>
 
 <div class="main-container">
@@ -19,5 +18,7 @@
 		/* align-items: center; */
 		/* background-color: #eae8f0; */
 		padding-bottom: 4rem;
+		background-color: #f0f3f5;
+		height: 100vh;
 	}
 </style>

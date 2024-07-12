@@ -1,18 +1,20 @@
 <script>
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { entries, showModal, entryToEdit } from '$lib/stores';
-	import { createEventDispatcher } from 'svelte';
+	import { entries, showModal, entryToEdit, topics } from '$lib/stores';
+	import Icon from '@iconify/svelte';
 	import InfoCard from '$lib/components/InfoCard.svelte';
 
 	let url = '';
 	let info = writable({ type: '', url: '', title: '', description: '', author: '', image: '' });
 	let loading = writable(false);
-	const dispatch = createEventDispatcher();
+	let newTopic = { name: '', color: '' };
+	let showNewTopicForm = true;
 
 	$: if ($entryToEdit) {
 		console.log('entryToEdit', $entryToEdit);
 		info.set($entryToEdit);
+		console.log('topics', $topics);
 	}
 
 	const extractInfo = async (url) => {
@@ -41,6 +43,11 @@
 		loading.set(true);
 		try {
 			const entry = $info;
+
+			if (!entry.topic) {
+				throw new Error('Topic is required');
+			}
+
 			const response = await fetch('/api/entries', {
 				method: 'POST',
 				headers: {
@@ -87,6 +94,26 @@
 		loading.set(false);
 	};
 
+	const addNewTopic = () => {
+		if (newTopic.name && newTopic.color) {
+			const newTopicObject = { id: Date.now(), ...newTopic }; // Temporary ID for new topic
+			info.update((i) => ({ ...i, topic: newTopicObject }));
+			topics.update((t) => [...t, newTopicObject]);
+			newTopic = { name: '', color: '' };
+			showNewTopicForm = false;
+		}
+	};
+
+	const handleTopicChange = (event) => {
+		if (event.target.value === 'new') {
+			showNewTopicForm = true;
+		} else {
+			const selectedTopicId = event.target.value;
+			const selectedTopic = $topics.find((topic) => topic.id === parseInt(selectedTopicId));
+			info.update((i) => ({ ...i, topic: selectedTopic }));
+		}
+	};
+
 	const resetForm = () => {
 		url = '';
 		info.set({ type: '', url: '', title: '', description: '', author: '', image: '' });
@@ -113,6 +140,30 @@
 				<InfoCard entry={$info} />
 			</div>
 			<div class="edit-form">
+				<label for="">
+					Topic:
+					<select on:change={handleTopicChange}>
+						<option value="" disabled>Select a topic</option>
+						{#each $topics as topic}
+							<option value={topic.id} selected={topic.id === $info.topic?.id}>{topic.name}</option>
+						{/each}
+						<hr />
+						<option value="new">+ Add new topic</option>
+					</select>
+				</label>
+				{#if showNewTopicForm}
+					<div class="new-topic-form">
+						<label>
+							New Topic Name:
+							<input type="text" bind:value={newTopic.name} />
+						</label>
+						<label>
+							New Topic Color:
+							<input type="color" bind:value={newTopic.color} />
+						</label>
+						<button on:click={addNewTopic}>Add Topic</button>
+					</div>
+				{/if}
 				<label>
 					Type:
 					<select bind:value={$info.type}>
@@ -190,7 +241,6 @@
 		width: 100%;
 		max-width: 600px;
 		margin: auto;
-		/* padding: 1rem; */
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -236,7 +286,6 @@
 		background-color: #fff;
 		border-radius: 0.5rem;
 		padding-top: 1.2rem;
-		/* box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.09); */
 	}
 
 	.edit-form {
@@ -272,12 +321,18 @@
 		height: 8rem;
 	}
 
+	.new-topic-form {
+		display: flex;
+		flex-direction: column;
+		padding: 1rem;
+	}
+
 	.button-container {
 		display: flex;
 		justify-content: space-between;
 		gap: 1rem;
 	}
-
+	.new-topic-form button,
 	.save-button,
 	.delete-button {
 		padding: 0.75rem 1.5rem;
@@ -285,6 +340,11 @@
 		border-radius: 0.375rem;
 		font-size: 1rem;
 		cursor: pointer;
+	}
+
+	.new-topic-form button {
+		background-color: #007bff;
+		color: white;
 	}
 
 	.save-button {

@@ -38,11 +38,12 @@
 	.main-container {
 		display: flex;
 		flex-direction: column;
-		min-height: 100vh;
+		height: 100vh;
 		width: 100vw;
 		justify-content: flex-start;
 		/* align-items: center; */
-		background-color: var(--main-background);
+		/* background-color: var(--main-background); */
+		position: relative;
 	}
 	header {
 		display: flex;
@@ -53,6 +54,13 @@
 		/* background-color: #eee; */
 		/* border-bottom: 1px solid #ccc; */
 		box-sizing: border-box;
+		position: sticky;
+		top: 0;
+		/* height: 4rem; */
+		z-index: 10;
+		background-color: white;
+		border-bottom-left-radius: 1rem;
+		border-bottom-right-radius: 1rem;
 	}
 
 	nav {

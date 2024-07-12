@@ -1,5 +1,10 @@
 export const load = async ({ fetch }) => {
-	const response = await fetch('/api/entries');
-	const entries = await response.json();
-	return { entries };
+	const entriesResponse = await fetch('/api/entries');
+	const topicsResponse = await fetch('/api/topics');
+
+	const entries = await entriesResponse.json();
+	const topics = await topicsResponse.json();
+
+	console.log('topics', topics);
+	return { entries, topics };
 };

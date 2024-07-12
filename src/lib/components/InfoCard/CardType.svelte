@@ -18,6 +18,8 @@
 		<Icon icon="lucide:music-4" />
 	{:else if type.includes('podcast')}
 		<Icon icon="lucide:podcast" />
+	{:else if type.includes('profile')}
+		<Icon icon="lucide:square-user-round" />
 	{:else}
 		<Icon icon="mdi:help-circle-outline" />
 	{/if}

@@ -8,6 +8,7 @@
 	import CardUserNote from './InfoCard/CardUserNote.svelte';
 
 	export let entry;
+	export let profile;
 
 	const dispatch = createEventDispatcher();
 
@@ -35,7 +36,7 @@
 	{/if}
 	<div class="image">
 		<div class="user-wrapper">
-			<CardAvatar includeName />
+			<CardAvatar {profile} includeName />
 		</div>
 		<img src={entry.image} alt={entry.title} />
 		<div class="card-type">
@@ -74,7 +75,6 @@
 		color: #333 !important;
 		font-family: 'Quicksand', sans-serif;
 		overflow: hidden;
-		cursor: pointer;
 	}
 
 	.edit-overlay {
@@ -127,7 +127,7 @@
 		position: absolute;
 		bottom: 0;
 		width: 100%;
-		padding: 0.6rem 0.6rem;
+		padding: 0 0.6rem 0.6rem;
 
 		color: #333;
 		box-sizing: border-box;

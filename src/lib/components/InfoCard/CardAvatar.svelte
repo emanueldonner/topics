@@ -1,6 +1,8 @@
 <script>
 	export let includeName = false;
 	export let size = 'medium';
+	export let profile;
+
 	const randomNumber = (min, max) => {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	};
@@ -36,10 +38,20 @@
 </script>
 
 <div class="user-avatar" class:small={size === 'small'}>
-	<img src="https://i.pravatar.cc/60?id={randomNumber(1, 70)}" alt="user avatar" />
+	{#if profile?.image}
+		<img src={profile.image} alt="user avatar" />
+	{:else}
+		<img src="https://i.pravatar.cc/60?id={randomNumber(1, 70)}" alt="user avatar" />
+	{/if}
 </div>
 {#if includeName}
-	<div class="user-name">{userName}</div>
+	<div class="user-name">
+		{#if profile?.name}
+			{profile.name}
+		{:else}
+			{userName}
+		{/if}
+	</div>
 {/if}
 
 <style>
